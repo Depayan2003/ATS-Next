@@ -125,7 +125,7 @@ export default function UserDashboard() {
 
           {!loadingJobs && jobs.length === 0 && (
             <p className="text-gray-500">
-              No open positions at the moment. Please check back later.
+              Now Blowjob is your only option....Gwak Gwak
             </p>
           )}
 
