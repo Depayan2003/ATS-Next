@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const router = useRouter();
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState<Array<{ _id: string; title: string; skills: string[]; expiresAt: string; description?: string }>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function HomePage() {
             </p>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {jobs.length > 0 && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {jobs.map((job) => (
               <div
                 key={job._id}
@@ -91,6 +91,11 @@ export default function HomePage() {
                     </span>
                   ))}
                 </div>
+                 <div>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Expires At : {new Date(job.expiresAt).toLocaleDateString()}
+                  </p>
+                </div>
 
                 {job.description && (
                   <p className="text-sm text-gray-600 mb-4 line-clamp-3">
@@ -106,7 +111,7 @@ export default function HomePage() {
                 </button>
               </div>
             ))}
-          </div>
+          </div>}
         </section>
 
       </div>

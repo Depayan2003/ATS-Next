@@ -26,12 +26,12 @@ export async function POST(req) {
     await connectDb();
 
     // 3️⃣ Parse request body
-    const { title, skills, description } = await req.json();
+    const { title, skills, description, expiresAt } = await req.json();
 
     // 4️⃣ Validate input
-    if (!title || !Array.isArray(skills) || skills.length === 0) {
+    if (!title || !Array.isArray(skills) || skills.length === 0 || !expiresAt) {
       return NextResponse.json(
-        { message: "Title and skills are required" },
+        { message: "Title, skills and expiry date are required" },
         { status: 400 }
       );
     }
@@ -41,6 +41,7 @@ export async function POST(req) {
       title,
       skills,
       description,
+      expiresAt: new Date(expiresAt)
     });
 
     // 6️⃣ Return response
@@ -64,7 +65,9 @@ export async function GET() {
   try {
     await connectDb();
 
-    const jobs = await Job.find().sort({ createdAt: -1 });
+    const jobs = await Job.find({
+      expiresAt: { $gt: new Date() }, // 🔑 CRITICAL
+    }).sort({ createdAt: -1 });
 
     return NextResponse.json(jobs, { status: 200 });
 

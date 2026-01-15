@@ -11,6 +11,7 @@ export default function AdminDashboard() {
   const [title, setTitle] = useState("");
   const [skills, setSkills] = useState("");
   const [description, setDescription] = useState("");
+  const [expiresAt, setexpiresAt] = useState("")
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -45,6 +46,7 @@ export default function AdminDashboard() {
         title,
         skills: skills.split(",").map((s) => s.trim()),
         description,
+        expiresAt
       }),
     });
 
@@ -65,7 +67,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-100 px-6 py-10">
       <div className="max-w-6xl mx-auto">
-        
+
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800">
@@ -90,7 +92,7 @@ export default function AdminDashboard() {
                 <span className="font-medium">Name:</span>{" "}
                 {session.user.name}
               </p>
-          
+
               <p className="text-red-600 font-semibold">
                 Role: ADMIN
               </p>
@@ -119,7 +121,7 @@ export default function AdminDashboard() {
             <form onSubmit={handleAddJob} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1">
-                  Job Title: 
+                  Job Title:
                 </label>
                 <input
                   type="text"
@@ -133,7 +135,7 @@ export default function AdminDashboard() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1">
-                  Required Skills: 
+                  Required Skills:
                 </label>
                 <input
                   type="text"
@@ -147,7 +149,7 @@ export default function AdminDashboard() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1">
-                  Job Description: 
+                  Job Description:
                 </label>
                 <textarea
                   rows={4}
@@ -157,7 +159,19 @@ export default function AdminDashboard() {
                   placeholder="Describe responsibilities and expectations"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Job Expiry Date
+                </label>
 
+                <input
+                  type="date"
+                  required
+                  onChange={(e) => setexpiresAt(e.target.value)}
+                  className="w-full border p-2 rounded"
+                />
+
+              </div>
               <button
                 type="submit"
                 disabled={loading}

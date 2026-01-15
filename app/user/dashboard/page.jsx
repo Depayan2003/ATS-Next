@@ -149,6 +149,11 @@ export default function UserDashboard() {
                     </span>
                   ))}
                 </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Expires At : {new Date(job.expiresAt).toLocaleDateString()}
+                  </p>
+                </div>
 
                 {job.description && (
                   <p className="text-sm text-gray-600 mb-4 line-clamp-3">
