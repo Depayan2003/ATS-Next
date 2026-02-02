@@ -11,9 +11,11 @@ export default function AdminDashboard() {
   const [title, setTitle] = useState("");
   const [skills, setSkills] = useState("");
   const [description, setDescription] = useState("");
-  const [expiresAt, setexpiresAt] = useState("")
+  const [expiresAt, setExpiresAt] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -25,6 +27,12 @@ export default function AdminDashboard() {
       router.push("/dashboard");
     }
   }, [status, session, router]);
+
+  useEffect(() => {
+    fetch("/api/jobs")
+      .then(res => res.json())
+      .then(setJobs);
+  }, []);
 
   if (status === "loading") {
     return (
@@ -62,54 +70,40 @@ export default function AdminDashboard() {
     setTitle("");
     setSkills("");
     setDescription("");
+    setExpiresAt("");
+    setJobs([data, ...jobs]);
   };
 
   return (
     <div className="min-h-screen bg-gray-100 px-6 py-10">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
 
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Admin Dashboard
-          </h1>
-          <p className="text-gray-500">
-            Manage job postings and recruitment flow
-          </p>
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800">
+              Admin Dashboard
+            </h1>
+            <p className="text-gray-500">
+              Manage job openings and applications
+            </p>
+          </div>
+
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+          >
+            Logout
+          </button>
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-          {/* Admin Profile Card */}
+          {/* Add Job */}
           <div className="bg-white rounded-xl shadow-sm border p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">
-              Admin Profile
-            </h2>
-
-            <div className="space-y-2 text-sm text-gray-700">
-              <p>
-                <span className="font-medium">Name:</span>{" "}
-                {session.user.name}
-              </p>
-
-              <p className="text-red-600 font-semibold">
-                Role: ADMIN
-              </p>
-            </div>
-
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="mt-6 w-full bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg transition"
-            >
-              Logout
-            </button>
-          </div>
-
-          {/* Add Job Card */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">
-              Post a New Job
+            <h2 className="text-xl font-semibold mb-4">
+              Post New Job
             </h2>
 
             {message && (
@@ -119,67 +113,86 @@ export default function AdminDashboard() {
             )}
 
             <form onSubmit={handleAddJob} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                  Job Title:
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Title of the job"
-                />
-              </div>
+              <input
+                type="text"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+                placeholder="Job Title"
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                  Required Skills:
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={skills}
-                  onChange={(e) => setSkills(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g : React, Next.js, Tailwind"
-                />
-              </div>
+              <input
+                type="text"
+                required
+                value={skills}
+                onChange={(e) => setSkills(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+                placeholder="Skills (comma separated)"
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                  Job Description:
-                </label>
-                <textarea
-                  rows={4}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Describe responsibilities and expectations"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Job Expiry Date
-                </label>
+              <textarea
+                rows={3}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+                placeholder="Job description"
+              />
 
-                <input
-                  type="date"
-                  required
-                  onChange={(e) => setexpiresAt(e.target.value)}
-                  className="w-full border p-2 rounded"
-                />
+              <input
+                type="date"
+                required
+                value={expiresAt}
+                onChange={(e) => setExpiresAt(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+              />
 
-              </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg transition disabled:opacity-60"
+                className="w-full bg-blue-600 text-white py-2 rounded"
               >
-                {loading ? "Posting Job..." : "Post Job"}
+                {loading ? "Posting..." : "Post Job"}
               </button>
             </form>
+          </div>
+
+          {/* Jobs List */}
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <h2 className="text-xl font-semibold mb-4">
+              Active Jobs
+            </h2>
+
+            <div className="space-y-3">
+              {jobs.map(job => (
+                <div
+                  key={job._id}
+                  className="border rounded p-4 flex justify-between items-center"
+                >
+                  <div>
+                    <h3 className="font-semibold">{job.title}</h3>
+                    <p className="text-xs text-gray-500">
+                      Expires: {new Date(job.expiresAt).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      router.push(`/admin/jobs/${job._id}/applications`)
+                    }
+                    className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    View Applications
+                  </button>
+                </div>
+              ))}
+
+              {jobs.length === 0 && (
+                <p className="text-gray-500 text-sm">
+                  No jobs posted yet.
+                </p>
+              )}
+            </div>
           </div>
 
         </div>

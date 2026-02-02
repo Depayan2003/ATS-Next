@@ -44,6 +44,34 @@ const ApplicationSchema = new mongoose.Schema(
       enum: ["APPLIED", "SHORTLISTED", "REJECTED"],
       default: "APPLIED",
     },
+    degree: {
+      type: String,
+      enum: ["BTECH_BE", "MTECH_ME"],
+      required: true,
+    },
+    stream: {
+      type: String,
+      required: true,
+    },
+    experience: {
+      type: Number,
+      required: true,
+    },
+    expiresAt: {
+      type: Date,
+      required: true,
+      index: true,
+    },
+    ai: {
+      similarityScore: Number,
+      finalScore: Number,
+      decision: {
+        type: String,
+        enum: ["SHORTLISTED", "REJECTED", "REVIEW"],
+      },
+      modelVersion: String,
+      evaluatedAt: Date,
+    }
   },
   { timestamps: true }
 );
