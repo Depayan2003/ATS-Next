@@ -6,7 +6,6 @@ import connectDb from "@/lib/mongodb";
 import User from "@/models/User";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 export const authOptions = {
   providers: [
