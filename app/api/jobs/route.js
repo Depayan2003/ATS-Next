@@ -4,8 +4,6 @@ import { NextResponse } from "next/server";
 import connectDb from "@/lib/mongodb";
 import Job from "@/models/Job";
 
-
-
 export async function POST(req) {
   try {
     // 1️⃣ Verify JWT & role
